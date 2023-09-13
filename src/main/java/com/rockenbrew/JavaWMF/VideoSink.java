@@ -1,4 +1,4 @@
-package JavaWMF;
+package com.rockenbrew.JavaWMF;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package JavaWMF;
+package com.rockenbrew.JavaWMF;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -462,7 +462,7 @@ public class CamTest {
 	    style.append("font-weight:" + (font.isBold() ? "bold" : "normal") + ";");
 	    style.append("font-size:" + font.getSize() + "pt;");
 		
-	    if (!com.rockenbrew.JavaWMF.SJMI.isOs64bit()) {
+	    if (!SJMI.isOs64bit()) {
 	    	
 	    	title = "x86 / 32-bit System Unsupported";
 	    	msg = new StringBuffer("<html><body style=\"" + style + "\">"
@@ -472,7 +472,7 @@ public class CamTest {
 			
 	    }
 	    else 
-	    	if (!com.rockenbrew.JavaWMF.SJMI.isLibAvailable())	{ // unsatisfied link exception error
+	    	if (!SJMI.isLibAvailable())	{ // unsatisfied link exception error
 			
 			title = "Video Device Library Error";
 

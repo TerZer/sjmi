@@ -1,4 +1,4 @@
-package JavaWMF;
+package com.rockenbrew.JavaWMF;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

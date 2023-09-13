@@ -1,4 +1,4 @@
-package JavaWMF;
+package com.rockenbrew.JavaWMF;
 
 public abstract class ErrorCodes {
 

@@ -1,4 +1,4 @@
-package JavaWMF;
+package com.rockenbrew.JavaWMF;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
