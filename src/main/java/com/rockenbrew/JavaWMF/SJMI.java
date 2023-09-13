@@ -32,7 +32,7 @@ public class SJMI {
 					
 			try {
 
-				System.loadLibrary("java/lib/sjmi");
+				System.loadLibrary("lib/sjmi");
 
 				libAvailable = true;
 				libAccessible = true;
