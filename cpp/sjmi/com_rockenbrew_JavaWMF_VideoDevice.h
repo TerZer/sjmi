@@ -19,6 +19,8 @@ extern "C" {
 #define com_rockenbrew_JavaWMF_VideoDevice_FORMAT_MPG 3L
 #undef com_rockenbrew_JavaWMF_VideoDevice_FORMAT_NV12
 #define com_rockenbrew_JavaWMF_VideoDevice_FORMAT_NV12 4L
+#undef com_rockenbrew_JavaWMF_VideoDevice_FORMAT_Y8
+#define com_rockenbrew_JavaWMF_VideoDevice_FORMAT_Y8 3L
 #undef com_rockenbrew_JavaWMF_VideoDevice_PROP_BRIGHTNESS
 #define com_rockenbrew_JavaWMF_VideoDevice_PROP_BRIGHTNESS 0L
 #undef com_rockenbrew_JavaWMF_VideoDevice_PROP_CONTRAST
