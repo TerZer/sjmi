@@ -2,13 +2,10 @@ package com.rockenbrew.JavaWMF;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
 
 public class SJMI {
 
