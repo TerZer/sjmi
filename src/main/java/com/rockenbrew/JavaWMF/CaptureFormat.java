@@ -12,11 +12,12 @@ public class CaptureFormat {
 	public static String FRAME_RATE_MAX = "MF_MT_FRAME_RATE_RANGE_MAX";
 	
 	
-	private HashMap<String,String> attributes;
+	private final HashMap<String,String> attributes;
 	private double frameWidth=-1, frameHeight=-1; // default values, in case attribute not present
 	private double frameRateN=-1, frameRateD=-1; // numerator & denominator
 	private double frameRateMinN=-1, frameRateMinD=-1; // numerator & denominator
 	private double frameRateMaxN=-1, frameRateMaxD=-1; // numerator & denominator
+	private final String videoFormat;
 	
 	public CaptureFormat(HashMap<String,String> attributes) {
 		
@@ -43,6 +44,8 @@ public class CaptureFormat {
 			frameRateMaxN = getAxBValue(this.attributes, FRAME_RATE_MAX, true);	
 			frameRateMaxD = getAxBValue(this.attributes, FRAME_RATE_MAX, false);	
 		}
+
+		videoFormat = getAttributeVal(CaptureFormat.VIDEO_FORMAT);
 		
 	}
 	
@@ -136,6 +139,10 @@ public class CaptureFormat {
 
 	public double getFrameRateMaxDenominator() {
 		return frameRateMaxD;
+	}
+
+	public String getVideoFormat(){
+		return videoFormat;
 	}
 
 	public double getMaxFrameRate()	{

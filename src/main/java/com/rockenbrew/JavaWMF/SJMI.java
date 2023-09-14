@@ -1,7 +1,14 @@
 package com.rockenbrew.JavaWMF;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
 
 public class SJMI {
 
@@ -32,7 +39,8 @@ public class SJMI {
 					
 			try {
 
-				System.loadLibrary("lib/sjmi");
+				final Path libraryPath = extractNativeBinary();
+				System.load(libraryPath.normalize().toString());
 
 				libAvailable = true;
 				libAccessible = true;
@@ -60,6 +68,28 @@ public class SJMI {
 		else
 			os64bit = false;
 					
+	}
+
+	public static Path extractNativeBinary(){
+		String location = "/lib/sjmi.dll";
+		final InputStream binary = SJMI.class.getResourceAsStream(location);
+		final Path destination;
+
+		// Do not try to delete the temporary directory on the close if Windows
+		// because there will be a write lock on the file which will cause an
+		// AccessDeniedException. Instead, try to delete existing instances of
+		// the temporary directory before extracting.
+		destination = new TemporaryDirectory().deleteOldInstancesOnStart().getPath().resolve("./" + location).normalize();
+
+		try {
+			Files.createDirectories(destination.getParent());
+			Files.copy(binary, destination);
+			binary.close();
+		} catch (final IOException ioe) {
+			throw new IllegalStateException(String.format("Error writing native library to \"%s\".", destination), ioe);
+		}
+
+		return destination;
 	}
 
 	public static void main(String[] args) {
@@ -238,7 +268,7 @@ public class SJMI {
 	private native boolean Initialise();
 	private native boolean Monitor(Receiver rcvr);
 	private native boolean Uninitialise();
-	
+
 
 
 }
