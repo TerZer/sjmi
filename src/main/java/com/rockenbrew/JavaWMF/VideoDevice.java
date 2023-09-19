@@ -55,7 +55,10 @@ public class VideoDevice {
 	public static long PROP_ERROR_VALUE = Long.MIN_VALUE+1;
 	
 	private SJMI handler;
-	
+
+	private final String vidPrefix = "vid_";
+	private final String pidPrefix = "pid_";
+
 	private String friendlyName;
 	private String uniqueID;
 	private int id;
@@ -83,6 +86,7 @@ public class VideoDevice {
 		
 		this.handler =  handler;
 		this.setId(id);
+		this.setUniqueID(uniqueID);
 		this.setFriendlyName(friendlyName);
 		this.setAvailable(available);
 		this.setActive(false);
@@ -96,7 +100,18 @@ public class VideoDevice {
 		this.streamMode = false;
 		
 	}
-	
+
+	public int getVid(){
+		int begin = uniqueID.indexOf(vidPrefix) + vidPrefix.length();
+		String vid = uniqueID.substring(begin, begin+4);
+		return Integer.decode("0x"+vid);
+	}
+
+	public int getPid(){
+		int begin = uniqueID.indexOf(pidPrefix) + pidPrefix.length();
+		String pid = uniqueID.substring(begin, begin+4);
+		return Integer.decode("0x"+pid);
+	}
 	
 	public boolean activate()	{
 		
