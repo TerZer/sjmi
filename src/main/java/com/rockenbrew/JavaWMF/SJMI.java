@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SJMI {
 
@@ -21,6 +23,8 @@ public class SJMI {
 	
 	private Sink monitorSink;
 	private Thread monitor; // monitor any library feedback
+
+	private Pattern pattern = Pattern.compile("\\$(.*?)\\$");
 	
 	
 	//
@@ -120,15 +124,19 @@ public class SJMI {
 		
 		String[] deviceName = GetAvailDevices(); // array of paired values ("friendly device names" & "device symbolic link")
 		
-		int deviceCount = deviceName.length / 2; // SJMI library will always return an even number
+		int deviceCount = deviceName.length / 3; // SJMI library will always return an even number
 		
 		devices = new ArrayList<VideoDevice>(deviceCount); // overwrites any previous instances
 		
-		for (int i=0; i<deviceCount*2; i+=2) {
-					
-			VideoDevice newDevice = new VideoDevice(this, (int)(i/2), deviceName[i], deviceName[i+1], true);
+		for (int i=0; i<deviceCount*3; i+=3) {
+
+			String parentId = deviceName[i+2];
+			Matcher matcher = pattern.matcher(parentId);
+			if(matcher.find()){
+				parentId = matcher.group();
+			}
+			VideoDevice newDevice = new VideoDevice(this, (int)(i/3), deviceName[i], deviceName[i+1], parentId, true);
 			devices.add(newDevice);
-		
 		}
 		
 		return devices;

@@ -64,6 +64,7 @@ struct Device
 
     // for device change notifications
     WCHAR* g_pwszSymbolicLink = NULL;
+    WCHAR* parentDeviceId = NULL;
     UINT32 g_cchSymbolicLink = 0;
 
 };

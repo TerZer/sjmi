@@ -6,6 +6,10 @@
 #include <cwchar>
 #include <clocale>
 #include <chrono>
+#include <cfgmgr32.h>
+#include <initguid.h>
+#include <devpropdef.h>
+#include <devpkey.h>
 
 using namespace std;
 
@@ -44,6 +48,7 @@ boolean init = false;
 
 boolean Deactivate(int deviceIndex);
 boolean StopStream();
+CONFIGRET LocateParent(PCWSTR pszDeviceInterface, WCHAR* parentDeviceID);
 
 BOOL APIENTRY DllMain(HMODULE hModule,
     DWORD  ul_reason_for_call,
@@ -167,21 +172,24 @@ HRESULT EnumerateVideoDevices(IMFAttributes*& pAttributes, IMFActivate**& ppDevi
 
 JNIEXPORT jobjectArray JNICALL Java_com_rockenbrew_JavaWMF_SJMI_GetAvailDevices
 (JNIEnv* env, jobject thisObject) {
-    // return pair of "device friendly name", "device symbolic link" for each device
+    // return pair of "device friendly name", "device symbolic link" and "parent id" for each device
 
     HRESULT hr = GetAvailDevices();
 
     jclass stringClass = env->FindClass("java/lang/String");
-    jobjectArray array = env->NewObjectArray(availDeviceCount * 2, stringClass, 0);
+    jobjectArray array = env->NewObjectArray(availDeviceCount * 3, stringClass, 0);
 
     for (jsize i = 0; i < availDeviceCount; i++)
     {
 
         jstring deviceFriendlyName = env->NewStringUTF(availDevice[i].friendlyName.c_str());
-        env->SetObjectArrayElement(array, i * 2, deviceFriendlyName);
+        env->SetObjectArrayElement(array, i * 3, deviceFriendlyName);
 
         jstring deviceSymbolicLink = env->NewStringUTF(ToNarrow(availDevice[i].g_pwszSymbolicLink).c_str());
-        env->SetObjectArrayElement(array, i * 2 + 1, deviceSymbolicLink);
+        env->SetObjectArrayElement(array, i * 3 + 1, deviceSymbolicLink);
+
+        jstring parentDeviceId = env->NewStringUTF(ToNarrow(availDevice[i].parentDeviceId).c_str());
+        env->SetObjectArrayElement(array, i * 3 + 2, parentDeviceId);
     }
 
     return array;
@@ -210,6 +218,9 @@ HRESULT GetAvailDevices()
         ppDevices[i]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK,
             &newDevice.g_pwszSymbolicLink, &newDevice.g_cchSymbolicLink);
 
+        newDevice.parentDeviceId = new WCHAR[1024];
+        LocateParent(newDevice.g_pwszSymbolicLink, newDevice.parentDeviceId);
+
         availDevice[i] = newDevice;
     }
 
@@ -222,6 +233,35 @@ done:
     }
     CoTaskMemFree(ppDevices);
     return hr;
+}
+
+CONFIGRET LocateParent(PCWSTR pszDeviceInterface, WCHAR *parentDeviceID)
+{
+    WCHAR buf[1024];
+
+    DEVPROPTYPE PropertyType;
+
+    ULONG BufferSize = sizeof(buf);
+
+    CONFIGRET err;
+
+    if (!(err = CM_Get_Device_Interface_Property(pszDeviceInterface, &DEVPKEY_Device_InstanceId, &PropertyType, (PBYTE)buf, &BufferSize, 0))) {
+        if (PropertyType == DEVPROP_TYPE_STRING) {
+            DEVINST dnDevInst;
+            if (!(err = CM_Locate_DevNode(&dnDevInst, buf, CM_LOCATE_DEVNODE_NORMAL))) {
+                // Get Parent Device ID
+                DEVINST devInstParent;
+                err = CM_Get_Parent(&devInstParent, dnDevInst, 0);
+                if (err == CR_SUCCESS) {
+                    return CM_Get_Device_ID(devInstParent, parentDeviceID, 1024, 0);
+                }
+            }
+        }
+        else {
+            err = CR_WRONG_TYPE;
+        }
+    }
+    return err;
 }
 
 

@@ -61,6 +61,7 @@ public class VideoDevice {
 
 	private String friendlyName;
 	private String uniqueID;
+	private String parentID;
 	private int id;
 	private int type;
 	private boolean available; // no unplugged
@@ -82,10 +83,11 @@ public class VideoDevice {
 	
 	private Thread streamer;
 	
-	public VideoDevice(SJMI handler, int id, String friendlyName, String uniqueID, boolean available)	{
+	public VideoDevice(SJMI handler, int id, String friendlyName, String uniqueID, String parentID, boolean available)	{
 		
 		this.handler =  handler;
 		this.setId(id);
+		this.setParentID(parentID);
 		this.setUniqueID(uniqueID);
 		this.setFriendlyName(friendlyName);
 		this.setAvailable(available);
@@ -582,6 +584,13 @@ public class VideoDevice {
 		return uniqueID;
 	}
 
+	public void setParentID(String parentID){
+		this.parentID = parentID;
+	}
+
+	public String getParentID(){
+		return parentID;
+	}
 
 	public void setUniqueID(String uniqueID) {
 		this.uniqueID = uniqueID;

@@ -35,6 +35,7 @@
 // Hardware camera control - brightness, focus, etc.
 
 #include <strmif.h>
+#pragma comment(lib, "Cfgmgr32.lib")
 #pragma comment(lib, "Strmiids.lib")
 
 // Device notification
